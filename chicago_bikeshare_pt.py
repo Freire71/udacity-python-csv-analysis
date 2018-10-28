@@ -161,21 +161,24 @@ def count_user_types(data_list: list) -> list:
     :param data_list:
         data_lista: lista contendo as amostras para extração dos dados
     :return:
-        Uma lista contendo, respectivamente, as quantidades de assinantes e clientes.
+        Uma lista contendo, respectivamente, as quantidades de subscriber, customers e dependent.
     """
     subscribers = 0
     customers = 0
+    dependent = 0
     for item in data_list:
         if item == 'Subscriber':
             subscribers += 1
         elif item == 'Customer':
             customers += 1
-    return [subscribers, customers]
+        elif item == 'Dependent':
+            dependent += 1
+    return [subscribers, customers, dependent]
 
 print("\nTAREFA 7: Verifique o gráfico!")
 user_types_list = column_to_list(data_list, -3)
 quantity = count_user_types(user_types_list)
-types = ['Subscriber', 'Customer']
+types = ['Subscriber', 'Customer', 'Dependent']
 y_pos = list(range(len(types)))
 plt.bar(y_pos, quantity)
 plt.xticks(y_pos, types)
@@ -206,17 +209,25 @@ min_trip = 0.
 max_trip = 0.
 mean_trip = 0.
 median_trip = 0.
+somatoria = 0
+numero_elementos = 0
+
 trip_duration_list = column_to_list(data_list, 2) #acessa a 3a coluna da lista
 new_list =[int(i) for i in trip_duration_list] #transforma todos os items da lista em inteiros e retorna uma nova lista
 new_list.sort() #ordena a lista para facilitar o calculo da mediana
+
+for item in new_list: #loop para somar todos os items da lista
+    somatoria += item
+    numero_elementos += 1
+
 max_trip = new_list[-1]
 min_trip = new_list[0]
-mean_trip = sum(new_list)/len(new_list)
-if len(new_list) % 2 == 1: #se o número de elementos for impar
-    index = (len(new_list))/2
+mean_trip = somatoria/len(new_list)
+if numero_elementos % 2 == 1: #se o número de elementos for impar
+    index = numero_elementos/2
     median_trip = new_list[int(index)]
 else: #se o número de elementos for par
-    index1, index2 = (len(new_list) / 2) - 1, len(new_list) / 2
+    index1, index2 = (numero_elementos/2) - 1, numero_elementos/2
     value1, value2 = new_list[int(index1)], new_list[int(index2)]
     median_trip = (value1 + value2)/2
 
@@ -279,7 +290,7 @@ def count_items(column_list: list) -> list:
 
     item_types = list(item_dict.keys()) #lista de chaves do dicionários
     count_items = list(item_dict.values()) #lista de valores do dicionário
-
+    print(sum(count_items))
     return item_types, count_items
 
 
